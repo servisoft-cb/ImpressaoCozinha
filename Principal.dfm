@@ -16,7 +16,7 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   object lblText: TLabel
     Left = 8
     Top = 64
-    Width = 415
+    Width = 219
     Height = 19
     Alignment = taCenter
     Caption = 'Aguardando nova Consulta'
@@ -2229,13 +2229,6 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       ProviderFlags = []
       ReadOnly = True
     end
-    object qryConsultaImpressaoDATA_HORA_PEDIDO: TDateField
-      AutoGenerateValue = arDefault
-      FieldName = 'DATA_HORA_PEDIDO'
-      Origin = 'DATA_HORA_PEDIDO'
-      ProviderFlags = []
-      ReadOnly = True
-    end
     object qryConsultaImpressaoID_PRODUTO: TIntegerField
       AutoGenerateValue = arDefault
       FieldName = 'ID_PRODUTO'
@@ -2288,6 +2281,13 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       ProviderFlags = []
       ReadOnly = True
       Size = 300
+    end
+    object qryConsultaImpressaoDATA_HORA_PEDIDO: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATA_HORA_PEDIDO'
+      Origin = 'DATA_HORA_PEDIDO'
+      ProviderFlags = []
+      ReadOnly = True
     end
   end
   object spAtualizaCupom: TFDStoredProc

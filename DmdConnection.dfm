@@ -6,12 +6,13 @@ object DMConection: TDMConection
   object FDConnection: TFDConnection
     Params.Strings = (
       'User_Name=SYSDBA'
-      'Database=D:\$Servisoft\SSFacil\Dados\SaoJose.FDB'
+      'Database=D:\Fontes\$Servisoft\Bases\SSFacil\SSFacil.FDB'
       'Password=masterkey'
       'CharacterSet=win1252'
       'Port=3050'
       'Server=localhost'
       'DriverID=FB')
+    Connected = True
     LoginPrompt = False
     Left = 32
     Top = 16
