@@ -35,6 +35,10 @@ type
     lblText: TLabel;
     spAtualizaCupom: TFDStoredProc;
     qryConsultaImpressaoDATA_HORA_PEDIDO: TSQLTimeStampField;
+    qryItemSem: TFDQuery;
+    qryItemSemID: TIntegerField;
+    qryItemSemITEM: TIntegerField;
+    qryItemSemID_PRODUTO: TIntegerField;
     procedure JvThreadTimer1Timer(Sender: TObject);
     procedure ApplicationEvents1Minimize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
@@ -49,6 +53,7 @@ type
     procedure AtualizaLabel(Texto : String);
     procedure AtualizaCupomItem(ID : Integer);
     procedure ConfiguraImpressora(Tipo : String);
+    procedure Abrir_Item_Sem;
     { Private declarations }
   public
     { Public declarations }
@@ -60,7 +65,7 @@ var
 implementation
 
 uses
-  System.IniFiles, DmdConnection;
+  System.IniFiles, DmdConnection, uUtilPadrao;
 
 {$R *.dfm}
 
@@ -68,6 +73,14 @@ procedure TfrmImpressaoCozinhaCopa.Abrir_Consulta;
 begin
   qryConsultaImpressao.Close;
   qryConsultaImpressao.Open;
+end;
+
+procedure TfrmImpressaoCozinhaCopa.Abrir_Item_Sem;
+begin
+  qryItemSem.Close;
+  qryItemSem.ParamByName('ID').AsInteger := qryConsultaImpressaoID.AsInteger;
+  qryItemSem.ParamByName('ITEM').AsInteger := qryConsultaImpressaoITEM.AsInteger;
+  qryItemSem.Open;
 end;
 
 procedure TfrmImpressaoCozinhaCopa.ApplicationEvents1Minimize(Sender: TObject);
@@ -125,7 +138,11 @@ begin
 end;
 
 procedure TfrmImpressaoCozinhaCopa.Imprimir;
+var
+  vObs : String;
+  primeiro : Boolean;
 begin
+  primeiro := True;
   ConfiguraImpressora(qryConsultaImpressaoLOCAL_IMPRESSAO.AsString);
   MMImprimir.Lines.Clear;
   MMImprimir.Lines.Add(' ');
@@ -142,7 +159,18 @@ begin
   MMImprimir.Lines.Add('</ae>'+FormatFloat('##00',qryConsultaImpressaoQTD.Value) + ' ' + qryConsultaImpressaoNOME_PRODUTO.AsString);
   MMImprimir.Lines.Add(' ');
   MMImprimir.Lines.Add(' ');
-  MMImprimir.Lines.Add('</ae>Obs:' + qryConsultaImpressaoOBSERVACAO.AsString);
+  vObs := '';
+  Abrir_Item_Sem;
+  while not qryItemSem.Eof do
+  begin
+    vObs := 'SEM ' + SQLLocate('PRODUTO', 'ID', 'NOME', qryItemSemID_PRODUTO.AsString);
+    if primeiro then
+      MMImprimir.Lines.Add('</fn>Obs: ' + vObs)
+    else
+      MMImprimir.Lines.Add('</fn>     ' + vObs);
+    primeiro := False;
+    qryItemSem.Next;
+  end;
   MMImprimir.Lines.Add('</fn>-----------------------------------------');
   MMImprimir.Lines.Add('</ce>Data/Hora: '+FormatDateTime('dd/mm/yy hh:nn:ss',qryConsultaImpressaoDATA_HORA_PEDIDO.AsDateTime));
   MMImprimir.Lines.Add(' ');

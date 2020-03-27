@@ -2303,4 +2303,44 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
         ParamType = ptInput
       end>
   end
+  object qryItemSem: TFDQuery
+    Connection = DMConection.FDConnection
+    SQL.Strings = (
+      'select *'
+      'from CUPOMFISCAL_ITENS_SEM'
+      'where ID = :ID and'
+      '      ITEM = :ITEM   ')
+    Left = 312
+    Top = 96
+    ParamData = <
+      item
+        Name = 'ID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'ITEM'
+        DataType = ftInteger
+        ParamType = ptInput
+      end>
+    object qryItemSemID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryItemSemITEM: TIntegerField
+      FieldName = 'ITEM'
+      Origin = 'ITEM'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryItemSemID_PRODUTO: TIntegerField
+      FieldName = 'ID_PRODUTO'
+      Origin = 'ID_PRODUTO'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+  end
 end
