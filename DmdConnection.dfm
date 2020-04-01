@@ -12,7 +12,6 @@ object DMConection: TDMConection
       'Port=3050'
       'Server=localhost'
       'DriverID=FB')
-    Connected = True
     LoginPrompt = False
     Left = 32
     Top = 16
