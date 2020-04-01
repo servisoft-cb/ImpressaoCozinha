@@ -11,6 +11,7 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  WindowState = wsMinimized
   PixelsPerInch = 96
   TextHeight = 13
   object lblText: TLabel

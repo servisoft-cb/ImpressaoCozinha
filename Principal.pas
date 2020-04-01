@@ -147,7 +147,10 @@ begin
   MMImprimir.Lines.Clear;
   MMImprimir.Lines.Add(' ');
   MMImprimir.Lines.Add(' ');
-  MMImprimir.Lines.Add('</ce><e> PEDIDO COZINHA </e>');
+  if qryConsultaImpressaoLOCAL_IMPRESSAO.AsString = 'C' then
+    MMImprimir.Lines.Add('</ce><e> PEDIDO COZINHA </e>')
+  else
+    MMImprimir.Lines.Add('</ce><e> PEDIDO COPA </e>');
   MMImprimir.Lines.Add(' ');
   MMImprimir.Lines.Add(' ');
   MMImprimir.Lines.Add('</fn>-----------------------------------------');
