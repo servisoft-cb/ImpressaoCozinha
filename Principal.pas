@@ -39,9 +39,12 @@ type
     qryItemSemID: TIntegerField;
     qryItemSemITEM: TIntegerField;
     qryItemSemID_PRODUTO: TIntegerField;
+    TimerMinimize: TJvThreadTimer;
     procedure JvThreadTimer1Timer(Sender: TObject);
     procedure ApplicationEvents1Minimize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure TimerMinimizeTimer(Sender: TObject);
   private
     PortaImpressora : String;
     ModeloImpressora : String;
@@ -85,7 +88,7 @@ end;
 
 procedure TfrmImpressaoCozinhaCopa.ApplicationEvents1Minimize(Sender: TObject);
 begin
-Self.Hide();
+  Self.Hide();
   Self.WindowState := wsMinimized;
   TrayIcon.Visible := True;
   TrayIcon.Animate := True;
@@ -128,6 +131,17 @@ begin
   ACBrPosPrinter.Device.Baud := VelocidadeImpressao;
   ACBrPosPrinter.Desativar;
   JvThreadTimer1.Interval := StrToIntDef(IniFile.ReadString('ACBR2','TempoCiclo',''),10000);
+end;
+
+procedure TfrmImpressaoCozinhaCopa.FormShow(Sender: TObject);
+begin
+//  Application.Minimize;
+
+  Self.WindowState := wsMinimized;
+  TrayIcon.Visible := True;
+  TrayIcon.Animate := True;
+  TrayIcon.ShowBalloonHint;
+
 end;
 
 procedure TfrmImpressaoCozinhaCopa.AtualizaCupomItem(ID: Integer);
@@ -207,6 +221,16 @@ begin
   TrayIcon.Animate := False;
   JvThreadTimer1.Enabled := True;
   AtualizaLabel('Aguardando nova Consulta');
+end;
+
+procedure TfrmImpressaoCozinhaCopa.TimerMinimizeTimer(Sender: TObject);
+begin
+  Self.Hide();
+  Self.WindowState := wsMinimized;
+  TrayIcon.Visible := True;
+  TrayIcon.Animate := True;
+  TrayIcon.ShowBalloonHint;
+  TimerMinimize.Enabled := False;
 end;
 
 procedure TfrmImpressaoCozinhaCopa.TrayIconDblClick(Sender: TObject);

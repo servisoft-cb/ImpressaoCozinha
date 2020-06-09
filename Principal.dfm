@@ -12,6 +12,7 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   Font.Style = []
   OldCreateOrder = False
   WindowState = wsMinimized
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lblText: TLabel
@@ -2343,5 +2344,11 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
+  end
+  object TimerMinimize: TJvThreadTimer
+    Enabled = True
+    OnTimer = TimerMinimizeTimer
+    Left = 368
+    Top = 88
   end
 end
