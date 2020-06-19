@@ -1,7 +1,7 @@
 object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   Left = 0
   Top = 0
-  Caption = 'Impress'#227'o Cozinha/Copa'
+  Caption = 'Impress'#227'o Cozinha/Copa  (10/06/2020)   (V.1.0)'
   ClientHeight = 147
   ClientWidth = 431
   Color = clBtnFace
