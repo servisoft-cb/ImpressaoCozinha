@@ -13,10 +13,8 @@ uses
 
 type
   TfrmImpressaoCozinhaCopa = class(TForm)
-    ACBrPosPrinter: TACBrPosPrinter;
     TrayIcon: TTrayIcon;
     PopupMenu1: TPopupMenu;
-    JvThreadTimer1: TJvThreadTimer;
     ApplicationEvents1: TApplicationEvents;
     MMImprimir: TMemo;
     qryConsultaImpressao: TFDQuery;
@@ -40,6 +38,22 @@ type
     qryItemSemITEM: TIntegerField;
     qryItemSemID_PRODUTO: TIntegerField;
     TimerMinimize: TJvThreadTimer;
+    JvThreadTimer1: TJvThreadTimer;
+    ACBrPosPrinter: TACBrPosPrinter;
+    qryImpressaoCancelamento: TFDQuery;
+    qryImpressaoCancelamentoID: TIntegerField;
+    qryImpressaoCancelamentoNUMCUPOM: TIntegerField;
+    qryImpressaoCancelamentoNUM_CARTAO: TSmallintField;
+    qryImpressaoCancelamentoNUM_MESA: TSmallintField;
+    qryImpressaoCancelamentoITEM: TIntegerField;
+    qryImpressaoCancelamentoDATA_HORA_PEDIDO: TSQLTimeStampField;
+    qryImpressaoCancelamentoID_PRODUTO: TIntegerField;
+    qryImpressaoCancelamentoNOME_PRODUTO: TStringField;
+    qryImpressaoCancelamentoREFERENCIA: TStringField;
+    qryImpressaoCancelamentoID_GRUPO: TIntegerField;
+    qryImpressaoCancelamentoLOCAL_IMPRESSAO: TStringField;
+    qryImpressaoCancelamentoQTD: TFloatField;
+    qryImpressaoCancelamentoOBSERVACAO: TStringField;
     procedure JvThreadTimer1Timer(Sender: TObject);
     procedure ApplicationEvents1Minimize(Sender: TObject);
     procedure TrayIconDblClick(Sender: TObject);
@@ -51,7 +65,9 @@ type
     VelocidadeImpressao : Integer;
     Cabecalho : Boolean;
     vID_Cupom : Integer;
+    vID_CupomCanc : Integer;
     procedure Imprimir;
+    procedure ImprimirCancelamento;
     procedure Abrir_Consulta;
     procedure AtualizaLabel(Texto : String);
     procedure AtualizaCupomItem(ID : Integer);
@@ -76,6 +92,8 @@ procedure TfrmImpressaoCozinhaCopa.Abrir_Consulta;
 begin
   qryConsultaImpressao.Close;
   qryConsultaImpressao.Open;
+  qryImpressaoCancelamento.Close;
+  qryImpressaoCancelamento.Open;
 end;
 
 procedure TfrmImpressaoCozinhaCopa.Abrir_Item_Sem;
@@ -188,6 +206,38 @@ begin
     primeiro := False;
     qryItemSem.Next;
   end;
+  MMImprimir.Lines.Add('</fn>' + qryConsultaImpressaoOBSERVACAO.AsString);
+  MMImprimir.Lines.Add('</fn>-----------------------------------------');
+  MMImprimir.Lines.Add('</ce>Data/Hora: '+FormatDateTime('dd/mm/yy hh:nn:ss',qryConsultaImpressaoDATA_HORA_PEDIDO.AsDateTime));
+  MMImprimir.Lines.Add(' ');
+  MMImprimir.Lines.Add(' ');
+  MMImprimir.Lines.Add('</corte_parcial>');
+  ACBrPosPrinter.Ativar;
+  ACBrPosPrinter.LinhasEntreCupons := 2;
+  ACBrPosPrinter.Imprimir(MMImprimir.Lines.Text);
+  ACBrPosPrinter.Desativar;
+end;
+
+procedure TfrmImpressaoCozinhaCopa.ImprimirCancelamento;
+begin
+  ConfiguraImpressora(qryConsultaImpressaoLOCAL_IMPRESSAO.AsString);
+  MMImprimir.Lines.Clear;
+  MMImprimir.Lines.Add(' ');
+  MMImprimir.Lines.Add(' ');
+  if qryConsultaImpressaoLOCAL_IMPRESSAO.AsString = 'C' then
+    MMImprimir.Lines.Add('</ce><e>CANCELA PED. COZINHA </e>')
+  else
+    MMImprimir.Lines.Add('</ce><e>CANCELA PED. COPA </e>');
+  MMImprimir.Lines.Add(' ');
+  MMImprimir.Lines.Add(' ');
+  MMImprimir.Lines.Add('</fn>-----------------------------------------');
+  MMImprimir.Lines.Add('</fn> Mesa: ' + qryConsultaImpressaoNUM_MESA.AsString);
+  MMImprimir.Lines.Add('</fn> Cartao: ' + qryConsultaImpressaoNUM_CARTAO.AsString);
+  MMImprimir.Lines.Add('</ae>Data: '+FormatDateTime('dd/mm/yy hh:nn:ss',Now));
+  MMImprimir.Lines.Add('</fn>-----------------------------------------');
+  MMImprimir.Lines.Add('</fn>Descricao                                   ');
+  MMImprimir.Lines.Add('</ae>Cancela ' + qryConsultaImpressaoNOME_PRODUTO.AsString);
+  MMImprimir.Lines.Add(' ');
   MMImprimir.Lines.Add('</fn>-----------------------------------------');
   MMImprimir.Lines.Add('</ce>Data/Hora: '+FormatDateTime('dd/mm/yy hh:nn:ss',qryConsultaImpressaoDATA_HORA_PEDIDO.AsDateTime));
   MMImprimir.Lines.Add(' ');
@@ -207,6 +257,7 @@ begin
   Abrir_Consulta;
   AtualizaLabel('Imprimindo!');
   vID_Cupom := 0;
+  vID_CupomCanc := 0;
   while not qryConsultaImpressao.Eof do
   begin
     if vID_Cupom = qryConsultaImpressaoID.AsInteger then
@@ -218,6 +269,20 @@ begin
     vID_Cupom := qryConsultaImpressaoID.AsInteger;
     qryConsultaImpressao.Next;
   end;
+  //Imprimir Cancelamento
+  qryImpressaoCancelamento.First;
+  while not qryImpressaoCancelamento.Eof do
+  begin
+    if vID_CupomCanc = qryImpressaoCancelamentoID.AsInteger then
+      Cabecalho := True
+    else
+      Cabecalho := False;
+    ImprimirCancelamento;
+    AtualizaCupomItem(qryImpressaoCancelamentoID.AsInteger);
+    vID_CupomCanc := qryImpressaoCancelamentoID.AsInteger;
+    qryImpressaoCancelamento.Next;
+  end;
+
   TrayIcon.Animate := False;
   JvThreadTimer1.Enabled := True;
   AtualizaLabel('Aguardando nova Consulta');

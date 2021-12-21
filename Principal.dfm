@@ -36,18 +36,6 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
     Height = 1
     TabOrder = 0
   end
-  object ACBrPosPrinter: TACBrPosPrinter
-    ConfigBarras.MostrarCodigo = False
-    ConfigBarras.LarguraLinha = 0
-    ConfigBarras.Altura = 0
-    ConfigBarras.Margem = 0
-    ConfigQRCode.Tipo = 2
-    ConfigQRCode.LarguraModulo = 4
-    ConfigQRCode.ErrorLevel = 0
-    LinhasEntreCupons = 0
-    Left = 304
-    Top = 16
-  end
   object TrayIcon: TTrayIcon
     Animate = True
     AnimateInterval = 150
@@ -2170,17 +2158,11 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       000000000000000000000000000000000000000000000000000000000000}
     PopupMenu = PopupMenu1
     OnDblClick = TrayIconDblClick
-    Left = 272
+    Left = 264
     Top = 16
   end
   object PopupMenu1: TPopupMenu
-    Left = 248
-    Top = 16
-  end
-  object JvThreadTimer1: TJvThreadTimer
-    Enabled = True
-    OnTimer = JvThreadTimer1Timer
-    Left = 368
+    Left = 208
     Top = 16
   end
   object ApplicationEvents1: TApplicationEvents
@@ -2204,8 +2186,8 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       'where I.STATUS = '#39'A'#39' and'
       '      I.CANCELADO = '#39'N'#39
       'order by I.DATA_HORA_PEDIDO')
-    Left = 216
-    Top = 16
+    Left = 328
+    Top = 96
     object qryConsultaImpressaoID: TIntegerField
       FieldName = 'ID'
       Origin = 'ID'
@@ -2295,8 +2277,8 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   object spAtualizaCupom: TFDStoredProc
     Connection = DMConection.FDConnection
     StoredProcName = 'PRC_ATUALIZA_STATUS_CUPOM'
-    Left = 216
-    Top = 96
+    Left = 184
+    Top = 104
     ParamData = <
       item
         Position = 1
@@ -2312,7 +2294,7 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
       'from CUPOMFISCAL_ITENS_SEM'
       'where ID = :ID and'
       '      ITEM = :ITEM   ')
-    Left = 312
+    Left = 296
     Top = 96
     ParamData = <
       item
@@ -2348,7 +2330,129 @@ object frmImpressaoCozinhaCopa: TfrmImpressaoCozinhaCopa
   object TimerMinimize: TJvThreadTimer
     Enabled = True
     OnTimer = TimerMinimizeTimer
-    Left = 368
-    Top = 88
+    Left = 80
+    Top = 104
+  end
+  object JvThreadTimer1: TJvThreadTimer
+    Enabled = True
+    OnTimer = JvThreadTimer1Timer
+    Left = 8
+    Top = 104
+  end
+  object ACBrPosPrinter: TACBrPosPrinter
+    ConfigBarras.MostrarCodigo = False
+    ConfigBarras.LarguraLinha = 0
+    ConfigBarras.Altura = 0
+    ConfigBarras.Margem = 0
+    ConfigQRCode.Tipo = 2
+    ConfigQRCode.LarguraModulo = 4
+    ConfigQRCode.ErrorLevel = 0
+    LinhasEntreCupons = 0
+    Left = 8
+    Top = 16
+  end
+  object qryImpressaoCancelamento: TFDQuery
+    Connection = DMConection.FDConnection
+    SQL.Strings = (
+      
+        'select C.ID, C.NUMCUPOM, C.NUM_CARTAO, C.NUM_MESA, I.ITEM, I.DAT' +
+        'A_HORA_PEDIDO, I.ID_PRODUTO, P.NOME NOME_PRODUTO,'
+      
+        '       P.REFERENCIA, G.ID ID_GRUPO, G.LOCAL_IMPRESSAO, I.QTD, I.' +
+        'OBSERVACAO'
+      'from CUPOMFISCAL C'
+      'inner join CUPOMFISCAL_ITENS I on C.ID = I.ID'
+      'inner join PRODUTO P on I.ID_PRODUTO = P.ID'
+      'left join GRUPO G on P.ID_GRUPO = G.ID'
+      'where I.STATUS = '#39'A'#39' and'
+      '      I.CANCELADO = '#39'S'#39
+      'order by I.DATA_HORA_PEDIDO')
+    Left = 264
+    Top = 96
+    object qryImpressaoCancelamentoID: TIntegerField
+      FieldName = 'ID'
+      Origin = 'ID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryImpressaoCancelamentoNUMCUPOM: TIntegerField
+      FieldName = 'NUMCUPOM'
+      Origin = 'NUMCUPOM'
+    end
+    object qryImpressaoCancelamentoNUM_CARTAO: TSmallintField
+      FieldName = 'NUM_CARTAO'
+      Origin = 'NUM_CARTAO'
+    end
+    object qryImpressaoCancelamentoNUM_MESA: TSmallintField
+      FieldName = 'NUM_MESA'
+      Origin = 'NUM_MESA'
+    end
+    object qryImpressaoCancelamentoITEM: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ITEM'
+      Origin = 'ITEM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoDATA_HORA_PEDIDO: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATA_HORA_PEDIDO'
+      Origin = 'DATA_HORA_PEDIDO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoID_PRODUTO: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ID_PRODUTO'
+      Origin = 'ID_PRODUTO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoNOME_PRODUTO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOME_PRODUTO'
+      Origin = 'NOME'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 100
+    end
+    object qryImpressaoCancelamentoREFERENCIA: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFERENCIA'
+      Origin = 'REFERENCIA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoID_GRUPO: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ID_GRUPO'
+      Origin = 'ID'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoLOCAL_IMPRESSAO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LOCAL_IMPRESSAO'
+      Origin = 'LOCAL_IMPRESSAO'
+      ProviderFlags = []
+      ReadOnly = True
+      FixedChar = True
+      Size = 1
+    end
+    object qryImpressaoCancelamentoQTD: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTD'
+      Origin = 'QTD'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object qryImpressaoCancelamentoOBSERVACAO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERVACAO'
+      Origin = 'OBSERVACAO'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 300
+    end
   end
 end
